@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EstablishmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,4 +20,7 @@ Route::get('/', function () {
 
 Auth::routes(['verify' => true]);
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::group(['middleware' => ['auth', 'verified']], function () {
+    Route::get('/establishments/create', [EstablishmentController::class, 'create'])->name('establishment.create');
+    Route::get('/establishments/edit', [EstablishmentController::class, 'edit'])->name('establishment.edit');
+});
