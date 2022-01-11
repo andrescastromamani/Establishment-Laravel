@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+@section('styles')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+@endsection
 @section('content')
     <div class="container">
         <h1 class="text-center">Create Establishment</h1>
@@ -50,9 +55,31 @@
                                    placeholder="Location">
                         </div>
                         <p class="text-center mt-3">Move the pin on the location of the establishment</p>
+                        <div class="form-group mt-3">
+                            <div id="map" style="height: 400px;"></div>
+                        </div>
                     </fieldset>
                 </form>
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const lat = -17.3949854;
+            const lng = -66.0581133;
+            const map = L.map('map').setView([lat, lng], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            const marker = L.marker([lat, lng]).addTo(map);
+        });
+    </script>
 @endsection
