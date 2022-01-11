@@ -58,6 +58,25 @@
                         <div class="form-group mt-3">
                             <div id="map" style="height: 400px;"></div>
                         </div>
+                        <p class="text-center mt-3">Confirm the dates please</p>
+                        <div class="form-group mt-3">
+                            <label for="direction">Direction</label>
+                            <input type="text" class="form-control @error('direction') is-invalid @enderror"
+                                   id="direction"
+                                   name="direction"
+                                   value="{{old('direction')}}"
+                                   placeholder="direction">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="suburb">Suburb</label>
+                            <input type="text" class="form-control @error('suburb') is-invalid @enderror"
+                                   id="suburb"
+                                   name="suburb"
+                                   value="{{old('suburb')}}"
+                                   placeholder="suburb">
+                        </div>
+                        <input type="hidden" name="latitude" id="latitude" value="{{old('latitude')}}">
+                        <input type="hidden" name="longitude" id="longitude" value="{{old('longitude')}}">
                     </fieldset>
                 </form>
             </div>
@@ -79,7 +98,18 @@
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
-            const marker = L.marker([lat, lng]).addTo(map);
+            const marker = L.marker([lat, lng], {
+                draggable: true,
+                autoPan: true
+            }).addTo(map);
+            //Detect when the marker is moveend
+            marker.on('moveend', function (e) {
+                const position = marker.getLatLng();
+                //center map on marker
+                map.panTo(position);
+                document.getElementById('latitude').value = position.lat;
+                document.getElementById('longitude').value = position.lng;
+            });
         });
     </script>
 @endsection
