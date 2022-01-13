@@ -1,15 +1,22 @@
 @extends('layouts.app')
 
 @section('styles')
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-          crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <!-- Esri Leaflet Geocoder -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css"
+    />
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.css"
+    />
 @endsection
 @section('content')
     <div class="container">
         <h1 class="text-center">Create Establishment</h1>
         <div class="row justify-content-center mt-5">
-            <div class="col-12 col-md-6 card p-3">
+            <div class="col-12 col-md-8 card p-3">
                 <form action="" class="">
                     <fieldset class="border p-3 rounded-3">
                         <legend>Establishment</legend>
@@ -48,11 +55,11 @@
                     <fieldset class="border p-3 rounded-3 mt-3">
                         <legend>Location</legend>
                         <div class="form-group mt-3">
-                            <label for="location">Direction of the establishment</label>
+                            <label for="search">Direction of the establishment</label>
                             <input type="text" class="form-control"
-                                   id="location"
-                                   name="location"
-                                   placeholder="Location">
+                                   id="search"
+                                   name="search"
+                                   placeholder="Search Direction">
                         </div>
                         <p class="text-center mt-3">Move the pin on the location of the establishment</p>
                         <div class="form-group mt-3">
@@ -75,8 +82,8 @@
                                    value="{{old('suburb')}}"
                                    placeholder="suburb">
                         </div>
-                        <input type="hidden" name="latitude" id="latitude" value="{{old('latitude')}}">
-                        <input type="hidden" name="longitude" id="longitude" value="{{old('longitude')}}">
+                        <input type="hidden" name="lat" id="lat" value="{{old('lat')}}">
+                        <input type="hidden" name="lng" id="lng" value="{{old('lng')}}">
                     </fieldset>
                 </form>
             </div>
@@ -85,11 +92,14 @@
 @endsection
 
 @section('scripts')
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-            crossorigin=""></script>
-
+    <script src="https://unpkg.com/leaflet/dist/leaflet-src.js"></script>
+    <!-- Load Esri Leaflet from CDN -->
+    <script src="https://unpkg.com/esri-leaflet"></script>
+    <script src="https://unpkg.com/esri-leaflet-geocoder"></script>
+    <!-- Make sure you put this AFtER leaflet.js, when using with leaflet -->
+    <script src="https://unpkg.com/leaflet-geosearch@3.0.0/dist/geosearch.umd.js"></script>
     <script>
+
         document.addEventListener('DOMContentLoaded', () => {
             const lat = -17.3949854;
             const lng = -66.0581133;
@@ -102,14 +112,49 @@
                 draggable: true,
                 autoPan: true
             }).addTo(map);
+
+            //Geocode service
+            const apiKey = "AAPKadc3f8c4eef24ed9a1661108b18757e3GCFAMQ9s5jtK-QxcX8Iyz34ROvTYWRjf8BELicUVCvNX3Dbw5NJ6KJ46CYUvYjsx"
+            const geocodeService = L.esri.Geocoding.geocodeService({
+                apikey: apiKey
+            });
+            //Search service
+            const searchControl = L.esri.Geocoding.geosearch({
+                providers: [
+                    L.esri.Geocoding.arcgisOnlineProvider({
+                        apikey: apiKey
+                    })]
+            });
+            const search = document.querySelector('#search');
+            search.addEventListener('blur', searchDirection)
+
             //Detect when the marker is moveend
             marker.on('moveend', function (e) {
                 const position = marker.getLatLng();
                 //center map on marker
-                map.panTo(position);
-                document.getElementById('latitude').value = position.lat;
-                document.getElementById('longitude').value = position.lng;
+                map.panTo(new L.LatLng(position.lat, position.lng));
+                //geocode marker position
+                geocodeService.reverse().latlng(position).run(function (error, result) {
+                    marker.bindPopup(result.address.Match_addr).openPopup();
+                    showInputs(result);
+                });
             });
+
+            function searchDirection(e) {
+                console.log(searchControl);
+                console.log(e.target.value);
+                if (e.target.value > 1) {
+
+                }
+            }
+
+            function showInputs(result) {
+                console.log(result);
+                document.getElementById('direction').value = result.address.Address || '';
+                document.getElementById('suburb').value = result.address.City || '';
+                document.getElementById('lat').value = result.latlng.lat || '';
+                document.getElementById('lng').value = result.latlng.lng || '';
+            }
         });
     </script>
 @endsection
