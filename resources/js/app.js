@@ -31,3 +31,4 @@ const app = new Vue({
     el: '#app',
 });
 require('./map')
+require('./dropzone')

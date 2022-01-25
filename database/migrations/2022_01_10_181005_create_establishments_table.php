@@ -33,6 +33,7 @@ class CreateEstablishmentsTable extends Migration
             $table->text('description');
             $table->time('open_time');
             $table->time('close_time');
+            $table->uuid('uuid');
             $table->foreign('category_id')->references('id')->on('categories');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
