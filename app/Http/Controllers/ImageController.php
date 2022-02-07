@@ -2,84 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Image;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
 
 class ImageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        return $request->all();
+        $path = $request->file('file')->store('images', 'public');
+        $image = Image::make(public_path("storage/{$path}"))->fit(800, 450);
+        $image->save();
+        $imageDB = new \App\Models\Image();
+        $imageDB->id_establishment = $request['uuid'];
+        $imageDB->url = $path;
+        $imageDB->save();
+        return response()->json(['success' => true, 'path' => $path]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param \App\Models\Image $image
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Image $image)
+    public function destroy(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Image $image
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Image $image)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Models\Image $image
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Image $image)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Image $image
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Image $image)
-    {
-        //
+        $image = $request->get('image');
+        if (File::exists('storage/' . $image)) {
+            File::delete('storage/' . $image);
+        }
+        $imageDB = \App\Models\Image::where('url', $image)->firstOrFail();
+        \App\Models\Image::destroy($imageDB->id);
+        return response()->json([
+            'success' => true,
+            'image' => $image
+        ]);
     }
 }

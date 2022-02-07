@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Establishment;
 use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
 
 class EstablishmentController extends Controller
 {
@@ -37,7 +38,28 @@ class EstablishmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+            'name' => 'required',
+            'category_id' => 'required',
+            'image' => 'required|image',
+            'direction' => 'required',
+            'suburb' => 'required',
+            'lat' => 'required',
+            'lng' => 'required',
+            'phone' => 'required|numeric',
+            'description' => 'required',
+            'open_time' => 'required|date_format:H:i',
+            'close_time' => 'required|date_format:H:i|after:open_time',
+            'uuid' => 'required',
+        ]);
+        $path_image = $request['image']->store('mainImages', 'public');
+        $image = Image::make(public_path("storage/{$path_image}"))->fit(800, 450);
+        $image->save();
+        $establishment = new Establishment($data);
+        $establishment->image = $path_image;
+        $establishment->user_id = auth()->user()->id;
+        $establishment->save();
+        return back()->with('status', 'Establishment created successfully');
     }
 
     /**

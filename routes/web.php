@@ -23,7 +23,9 @@ Auth::routes(['verify' => true]);
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('/establishments/create', [EstablishmentController::class, 'create'])->name('establishment.create');
+    Route::post('/establishments', [EstablishmentController::class, 'store'])->name('establishment.store');
     Route::get('/establishments/edit', [EstablishmentController::class, 'edit'])->name('establishment.edit');
     //images
-    Route::post('/images/store', [ImageController::class, 'store'])->name('images.store');
+    Route::post('/images/store', [ImageController::class, 'store'])->name('image.store');
+    Route::post('/images/delete', [ImageController::class, 'destroy'])->name('image.destroy');
 });

@@ -18,10 +18,16 @@
 @endsection
 @section('content')
     <div class="container">
+        @if (session('status'))
+            <div class="alert alert-success" role="alert">
+                {{session('status')}}
+            </div>
+        @endif
         <h1 class="text-center">Create Establishment</h1>
         <div class="row justify-content-center mt-5">
             <div class="col-12 col-lg-8 card p-3">
-                <form action="" class="">
+                <form class="" enctype="multipart/form-data" action="{{route('establishment.store')}}" method="POST">
+                    @csrf
                     <fieldset class="border p-3 rounded-3">
                         <legend>Establishment</legend>
                         <div class="form-group mt-3">
@@ -43,6 +49,9 @@
                                             @if(old('category_id') == $category->id) selected @endif>{{$category->name}}</option>
                                 @endforeach
                             </select>
+                            @error('category_id')
+                            <small class="invalid-feedback">{{$message}}</small>
+                            @enderror
                         </div>
                         <div class="form-group mt-3">
                             <label for="image">Image</label>
@@ -77,6 +86,9 @@
                                    name="direction"
                                    value="{{old('direction')}}"
                                    placeholder="direction">
+                            @error('direction')
+                            <small class="invalid-feedback">{{$message}}</small>
+                            @enderror
                         </div>
                         <div class="form-group mt-3">
                             <label for="suburb">Suburb</label>
@@ -85,6 +97,9 @@
                                    name="suburb"
                                    value="{{old('suburb')}}"
                                    placeholder="suburb">
+                            @error('suburb')
+                            <small class="invalid-feedback">{{$message}}</small>
+                            @enderror
                         </div>
                         <input type="hidden" name="lat" id="lat" value="{{old('lat')}}">
                         <input type="hidden" name="lng" id="lng" value="{{old('lng')}}">
@@ -93,17 +108,23 @@
                         <legend>Establishment Information</legend>
                         <div class="form-group mt-3">
                             <label for="phone">Phone Number</label>
-                            <input type="text" class="form-control"
+                            <input type="text" class="form-control @error('phone') is-invalid @enderror"
                                    id="phone"
                                    name="phone"
                                    placeholder="Phone Number">
+                            @error('phone')
+                            <small class="invalid-feedback">{{$message}}</small>
+                            @enderror
                         </div>
                         <div class="form-group mt-3">
                             <label for="direction">Description</label>
-                            <textarea class="form-control"
+                            <textarea class="form-control @error('description') is-invalid @enderror"
                                       id="description"
                                       name="description"
                                       placeholder="Description">{{old('description')}}</textarea>
+                            @error('description')
+                            <small class="invalid-feedback">{{$message}}</small>
+                            @enderror
                         </div>
                         <div class="form-group mt-3">
                             <label for="open_time">Opening time</label>
@@ -111,6 +132,9 @@
                                    id="open_time"
                                    name="open_time"
                                    value="{{old('open_time')}}">
+                            @error('open_time')
+                            <small class="invalid-feedback">{{$message}}</small>
+                            @enderror
                         </div>
                         <div class="form-group mt-3">
                             <label for="close_time">Closing time</label>
@@ -118,6 +142,9 @@
                                    id="close_time"
                                    name="close_time"
                                    value="{{old('close_time')}}">
+                            @error('close_time')
+                            <small class="invalid-feedback">{{$message}}</small>
+                            @enderror
                         </div>
                     </fieldset>
                     <fieldset class="border p-3 rounded-3 mt-3">

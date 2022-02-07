@@ -3,10 +3,9 @@ import {OpenStreetMapProvider} from 'leaflet-geosearch';
 const provider = new OpenStreetMapProvider();
 document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('#map')) {
-        const lat = -17.393735;
-        const lng = -66.1571091;
+        const lat = document.querySelector('#lat').value === '' ? -17.3937938 : document.querySelector('#lat').value;
+        const lng = document.querySelector('#lng').value === '' ? -66.1591493 : document.querySelector('#lng').value;
         const map = L.map('map').setView([lat, lng], 13);
-
         //markers
         const markers = L.featureGroup().addTo(map);
 
