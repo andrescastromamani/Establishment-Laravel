@@ -12,4 +12,9 @@ class Establishment extends Model
     protected $fillable = [
         'name', 'category_id', 'image', 'direction', 'suburb', 'lat', 'lng', 'phone', 'description', 'open_time', 'close_time', 'uuid', 'user_id',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo('App\Models\Category');
+    }
 }
