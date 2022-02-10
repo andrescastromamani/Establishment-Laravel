@@ -17,26 +17,26 @@ class CategorySeeder extends Seeder
     public function run()
     {
         DB::table('categories')->insert([
-            'name' => 'restaurant',
+            'name' => 'Restaurant',
             'slug' => Str::slug('restaurant'),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
         DB::table('categories')->insert([
-            'name' => 'gym',
+            'name' => 'Gym',
             'slug' => Str::slug('gym'),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
         DB::table('categories')->insert([
-            'name' => 'hospital',
+            'name' => 'Hospital',
             'slug' => Str::slug('hospital'),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
         DB::table('categories')->insert([
-            'name' => 'doctor',
-            'slug' => Str::slug('doctor'),
+            'name' => 'University',
+            'slug' => Str::slug('university'),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
