@@ -27,7 +27,6 @@ export default {
         axios.get('/api/categories/restaurant')
             .then(response => {
                 this.restaurants = response.data;
-                console.log(response.data);
             })
             .catch(function (error) {
                 console.log(error);

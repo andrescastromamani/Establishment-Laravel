@@ -18,20 +18,19 @@
 </template>
 <script>
 export default {
-    data: function () {
-        return {
-            hospitals: []
-        }
-    },
     mounted() {
         axios.get('/api/categories/hospital')
             .then(response => {
-                this.hospitals = response.data;
-                console.log(response.data);
+                this.$store.commit("ADD_HOSPITAL", response.data);
             })
             .catch(function (error) {
                 console.log(error);
             })
     },
+    computed: {
+        hospitals() {
+            return this.$store.state.hospitals;
+        }
+    }
 }
 </script>

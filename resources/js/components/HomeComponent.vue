@@ -9,15 +9,18 @@
 <script>
 import HospitalCategory from './HospitalCategory.vue';
 import RestaurantCategory from './RestaurantCategory.vue';
-import UniversityCategory from "./UniversityCategory";
-import GymCategory from "./GymCategory";
+import UniversityCategory from './UniversityCategory';
+import GymCategory from './GymCategory';
+
+import store from '../store';
 
 export default {
+    store,
     components: {
         'hospital-category': HospitalCategory,
         'restaurant-category': RestaurantCategory,
         'gym-category': GymCategory,
         'university-category': UniversityCategory
-    }
+    },
 }
 </script>
