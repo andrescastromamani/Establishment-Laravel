@@ -18,19 +18,19 @@
 </template>
 <script>
 export default {
-    data: function () {
-        return {
-            restaurants: []
-        }
-    },
     mounted() {
         axios.get('/api/categories/restaurant')
             .then(response => {
-                this.restaurants = response.data;
+                this.$store.commit("ADD_RESTAURANT", response.data);
             })
             .catch(function (error) {
                 console.log(error);
             })
     },
+    computed: {
+        restaurants() {
+            return this.$store.state.restaurants;
+        }
+    }
 }
 </script>
